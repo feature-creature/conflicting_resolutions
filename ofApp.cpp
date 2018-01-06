@@ -37,8 +37,8 @@ void ofApp::draw(){
     ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
     ofPopStyle();
 
-    // center the shapes
-    // width-gridsize/2
+    // center the grid of pixels
+    // note that window center is not a specific central pixel, but space between the central 4 pixels
     ofTranslate(((ofGetWidth()-(spacingX*numOfXTiles))/2) + (spacingX/2),((ofGetHeight()-(spacingY*numOfYTiles))/2) + (spacingY/2));
     // iterate over grid rows
     for(int x = 0; x < numOfXTiles; x++)

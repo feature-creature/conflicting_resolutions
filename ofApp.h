@@ -8,6 +8,7 @@ public:
     void setup();
     void update();
     void draw();
+    void keyPressed(int key);
 
     int bgColor;
     int numOfXTiles;
@@ -19,4 +20,8 @@ public:
     int objSize;
     int objMovementDist;
 
+    int initialWidth;
+    int initialHeight;
+
+    ofImage face;
 };

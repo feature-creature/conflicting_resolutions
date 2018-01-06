@@ -11,60 +11,105 @@ void ofApp::setup(){
     ofSetColor(255);
 
     //initialize grid resolution
-    numOfXTiles = 80; // 80,20,4
-    numOfYTiles = 80; // 80,20,4
-
-    // initialize grid spacing
-    spacingY = ofGetHeight()/numOfYTiles;
-    spacingX = ofGetWidth()/numOfXTiles;
+    numOfXTiles = 4; // 80-2,20-4,4-10
+    numOfYTiles = 4; // 80-2,20-4,4-10
 
     // initialize 'pixels'
-    objSize = 2;
-    objMovementDist = spacingX;
     ofSetCircleResolution(50);
+    objSize = 70;
+
+    // initialize grid spacing
+    // 600/81 = 7.4
+    spacingX = ofGetWidth()/numOfXTiles;
+    spacingY = ofGetHeight()/numOfYTiles;
+
+    face.load("ts-eliot-crop.jpeg");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
     // background ghosting
     ofPushStyle();
     ofSetColor(bgColor,50);
     ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
     ofPopStyle();
 
-    // center the grid of pixels
-    // note that window center is not a specific central pixel, but space between the central 4 pixels
-    ofTranslate(((ofGetWidth()-(spacingX*numOfXTiles))/2) + (spacingX/2),((ofGetHeight()-(spacingY*numOfYTiles))/2) + (spacingY/2));
-    // iterate over grid rows
-    for(int x = 0; x < numOfXTiles; x++)
+    //pixels
+    // iterate over rows
+    for(int x = 1; x <= numOfXTiles; x++)
     {
         // iterate over current row's columns
-        for(int y = 0; y < numOfYTiles; y++)
+        for(int y = 1; y <= numOfYTiles; y++)
         {
-            // determine current pixel's location
-            float locX = x*spacingX;
-            float locY = y*spacingY;
+            // determine location of current pixel
+            float locX = x*spacingX -spacingX/2;
+            float locY = y*spacingY -spacingY/2;
 
             ofPushMatrix();
             ofPushStyle();
-
-            // debugging
-            if(x == numOfXTiles - 1|| x == 0 || y == numOfYTiles - 1 || y == 0 || x == numOfXTiles/2 || y == numOfYTiles/2 || x == numOfXTiles/2 - 1 || y == numOfYTiles/2 - 1){
-                ofSetColor(0);
-            }else{
-                ofSetColor(255);
-            }
-
+            // color
+            ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
+            ofSetColor(gray);
+//            if(x == 1 || y == 1 || x == numOfXTiles || y == numOfYTiles || y == numOfYTiles/2 ||x == numOfXTiles/2){ofSetColor(255,0,0);}
+            // set location of current pixel
             ofTranslate(locX,locY);
+            float angle = atan2(ofGetHeight()/2 - locY,ofGetWidth()/2 - locX);
+            float shapeDist = ofDist(ofGetWidth()/2,ofGetHeight()/2,locX,locY);
+
             ofDrawCircle(0,0,objSize);
+
+
+            // rotate in the (opposite + 180) direction from the window center
+            ofRotate(ofRadToDeg(angle) + 180);
+            // translate sinusoidally from the direction of the window's center
+            ofTranslate(ofMap(sin(ofGetElapsedTimef() + ofMap(shapeDist,0,ofGetWidth()/2,PI,0)), 0, 1, 0, spacingX/1.25)-(spacingX*0.5),0);
+
+//            ofSetColor(255,50);
+//            ofDrawCircle(0,0,objSize);
 
             ofPopStyle();
             ofPopMatrix();
         }
     }
+
+    // center seed circle
+//    ofSetColor(255);
+//    ofDrawCircle(ofGetWidth()/2,ofGetHeight()/2,objSize);
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+    // save screenshot as png
+    if(key == 's'){
+        ofSaveScreen(ofToString(ofGetFrameNum())+".png");
+    }
+
+    if(key == '1'){
+        numOfXTiles = 4;
+        numOfYTiles = 4;
+        objSize = 70;
+        spacingX = ofGetWidth()/numOfXTiles;
+        spacingY = ofGetHeight()/numOfYTiles;
+    }
+    if(key == '2'){
+        numOfXTiles = 20;
+        numOfYTiles = 20;
+        spacingX = ofGetWidth()/numOfXTiles;
+        spacingY = ofGetHeight()/numOfYTiles;
+        objSize = 10;
+    }
+    if(key == '3'){
+        numOfXTiles = 80;
+        numOfYTiles = 80;
+        spacingX = ofGetWidth()/numOfXTiles;
+        spacingY = ofGetHeight()/numOfYTiles;
+        objSize = 2;
+    }
+
+
 }

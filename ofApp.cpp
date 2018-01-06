@@ -50,13 +50,9 @@ void ofApp::draw(){
             float locX = x*spacingX;
             float locY = y*spacingY;
 
-            float angle = atan2(ofGetHeight()/2 - locY,ofGetWidth()/2 - locX);
-            float shapeDist = ofDist(ofGetWidth()/2,ofGetHeight()/2,locX,locY);
-
             ofPushMatrix();
-            ofTranslate(locX,locY);
-
             ofPushStyle();
+
             // debugging
             if(x == numOfXTiles - 1|| x == 0 || y == numOfYTiles - 1 || y == 0 || x == numOfXTiles/2 || y == numOfYTiles/2 || x == numOfXTiles/2 - 1 || y == numOfYTiles/2 - 1){
                 ofSetColor(0);
@@ -64,7 +60,9 @@ void ofApp::draw(){
                 ofSetColor(255);
             }
 
+            ofTranslate(locX,locY);
             ofDrawCircle(0,0,objSize);
+
             ofPopStyle();
             ofPopMatrix();
         }

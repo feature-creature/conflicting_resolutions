@@ -10,6 +10,8 @@ public:
     void draw();
     void keyPressed(int key);
     void clearWindow();
+    void validate();
+    void invalidate();
 
     int bgColor;
     int numOfXTiles;
@@ -25,4 +27,6 @@ public:
     int initialHeight;
 
     ofImage face;
+    bool growth;
+    int growthSpeed;
 };

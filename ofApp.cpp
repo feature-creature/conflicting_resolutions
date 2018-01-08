@@ -14,6 +14,8 @@ void ofApp::setup(){
     numOfXTiles = 4;
     numOfYTiles = 4;
 
+    growthSpeed = 40;
+
     // initialize 'pixels'
     ofSetCircleResolution(50);
     objSize = 70;
@@ -24,6 +26,8 @@ void ofApp::setup(){
     spacingY = ofGetHeight()/numOfYTiles;
 
     face.load("ts-eliot-crop.jpeg");
+
+    growth = true;
 }
 
 //--------------------------------------------------------------
@@ -60,21 +64,50 @@ void ofApp::draw(){
             // growth pixels
             // rotate in the (opposite + 180) direction from the window center
             // translate sinusoidally from the direction of the window's center
+
+            //ENTER
+            if(growth){
             ofPushMatrix();
             ofRotate(ofRadToDeg(angle) + 180);
-            float liner = ofGetElapsedTimef() + ofMap(shapeDist,0,ofGetWidth()/2,0,HALF_PI);
+            // different timing scaling for each stage
+            // start time over at each new iteration
+            float liner = shapeDist - ofGetElapsedTimef()*growthSpeed ;
             float siner = sin(liner);
-            ofTranslate(ofMap(siner, -0.45, 1, 0, spacingX/2)-(spacingX*0.5),0);
+            ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
+            if(liner > 0){
+            ofTranslate(liner,0);
             ofSetColor(255,30);
+//            ofSetColor(gray,30);
+            }else{
+            ofSetColor(gray);
+            }
             ofDrawCircle(0,0,objSize);
+            // rotate object orientation back to standard
+//            ofRotate(-1*(ofRadToDeg(angle) + 180));
+//            ofSetRectMode(OF_RECTMODE_CENTER);
+//            ofDrawRectangle(0,0,objSize,objSize);
             ofPopMatrix();
 
-            // static pixels
-            // color
-            ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
-            ofSetColor(gray);
-            ofDrawCircle(0,0,objSize);
+            //EXIT
+            }else{
 
+                ofPushMatrix();
+                ofRotate(ofRadToDeg(angle) + 180);
+                // different timing scaling for each stage
+                // start time over at each new iteration
+                float liner = ofMap(shapeDist,0,ofGetWidth()/2,0,HALF_PI) + ofGetElapsedTimef()*3 ;
+                float siner = sin(liner);
+                ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
+
+                if(liner < shapeDist){
+                ofTranslate(liner,0);
+                ofSetColor(255,30);
+                ofRotate(-1*(ofRadToDeg(angle) + 180));
+                ofSetRectMode(OF_RECTMODE_CENTER);
+                ofDrawRectangle(0,0,objSize,objSize);
+                ofPopMatrix();
+                }
+            }
 
 
             ofPopStyle();
@@ -93,6 +126,14 @@ void ofApp::clearWindow(){
     ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
 }
 
+void ofApp::validate(){
+    ofSetColor(255);
+}
+
+void ofApp::invalidate(){
+    ofSetColor(0);
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     // save screenshot as png
@@ -107,6 +148,7 @@ void ofApp::keyPressed(int key){
         objSize = 70;
         spacingX = ofGetWidth()/numOfXTiles;
         spacingY = ofGetHeight()/numOfYTiles;
+        growthSpeed = 40;
     }
     if(key == '2'){
         clearWindow();
@@ -115,6 +157,7 @@ void ofApp::keyPressed(int key){
         spacingX = ofGetWidth()/numOfXTiles;
         spacingY = ofGetHeight()/numOfYTiles;
         objSize = 10;
+        growthSpeed = 20;
     }
     if(key == '3'){
         clearWindow();
@@ -123,6 +166,10 @@ void ofApp::keyPressed(int key){
         spacingX = ofGetWidth()/numOfXTiles;
         spacingY = ofGetHeight()/numOfYTiles;
         objSize = 2;
+        growthSpeed = 10;
+    }
+    if(key == '4'){
+        growth = !growth;
     }
 
 

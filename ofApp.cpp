@@ -11,8 +11,8 @@ void ofApp::setup(){
     ofSetColor(255);
 
     //initialize grid resolution
-    numOfXTiles = 4; // 80-2,20-4,4-10
-    numOfYTiles = 4; // 80-2,20-4,4-10
+    numOfXTiles = 4;
+    numOfYTiles = 4;
 
     // initialize 'pixels'
     ofSetCircleResolution(50);
@@ -52,34 +52,45 @@ void ofApp::draw(){
 
             ofPushMatrix();
             ofPushStyle();
-            // color
-            ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
-            ofSetColor(gray);
-//            if(x == 1 || y == 1 || x == numOfXTiles || y == numOfYTiles || y == numOfYTiles/2 ||x == numOfXTiles/2){ofSetColor(255,0,0);}
-            // set location of current pixel
             ofTranslate(locX,locY);
             float angle = atan2(ofGetHeight()/2 - locY,ofGetWidth()/2 - locX);
             float shapeDist = ofDist(ofGetWidth()/2,ofGetHeight()/2,locX,locY);
 
+
+            // growth pixels
+            // rotate in the (opposite + 180) direction from the window center
+            // translate sinusoidally from the direction of the window's center
+            ofPushMatrix();
+            ofRotate(ofRadToDeg(angle) + 180);
+            float liner = ofGetElapsedTimef() + ofMap(shapeDist,0,ofGetWidth()/2,0,HALF_PI);
+            float siner = sin(liner);
+            ofTranslate(ofMap(siner, -0.45, 1, 0, spacingX/2)-(spacingX*0.5),0);
+            ofSetColor(255,30);
+            ofDrawCircle(0,0,objSize);
+            ofPopMatrix();
+
+            // static pixels
+            // color
+            ofColor gray = face.getColor(x*(80/numOfXTiles),y*(80/numOfYTiles));
+            ofSetColor(gray);
             ofDrawCircle(0,0,objSize);
 
 
-            // rotate in the (opposite + 180) direction from the window center
-            ofRotate(ofRadToDeg(angle) + 180);
-            // translate sinusoidally from the direction of the window's center
-            ofTranslate(ofMap(sin(ofGetElapsedTimef() + ofMap(shapeDist,0,ofGetWidth()/2,PI,0)), 0, 1, 0, spacingX/1.25)-(spacingX*0.5),0);
-
-//            ofSetColor(255,50);
-//            ofDrawCircle(0,0,objSize);
 
             ofPopStyle();
             ofPopMatrix();
         }
     }
 
+
     // center seed circle
 //    ofSetColor(255);
 //    ofDrawCircle(ofGetWidth()/2,ofGetHeight()/2,objSize);
+}
+
+void ofApp::clearWindow(){
+    ofSetColor(150);
+    ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
 }
 
 //--------------------------------------------------------------
@@ -90,6 +101,7 @@ void ofApp::keyPressed(int key){
     }
 
     if(key == '1'){
+        clearWindow();
         numOfXTiles = 4;
         numOfYTiles = 4;
         objSize = 70;
@@ -97,6 +109,7 @@ void ofApp::keyPressed(int key){
         spacingY = ofGetHeight()/numOfYTiles;
     }
     if(key == '2'){
+        clearWindow();
         numOfXTiles = 20;
         numOfYTiles = 20;
         spacingX = ofGetWidth()/numOfXTiles;
@@ -104,6 +117,7 @@ void ofApp::keyPressed(int key){
         objSize = 10;
     }
     if(key == '3'){
+        clearWindow();
         numOfXTiles = 80;
         numOfYTiles = 80;
         spacingX = ofGetWidth()/numOfXTiles;
@@ -113,3 +127,4 @@ void ofApp::keyPressed(int key){
 
 
 }
+

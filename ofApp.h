@@ -10,8 +10,11 @@ public:
     void draw();
     void keyPressed(int key);
     void clearWindow();
-    void validate();
-    void invalidate();
+    void detection();
+    void recognition();
+    void identification();
+    void changeScene();
+
 
     int bgColor;
     int numOfXTiles;
@@ -27,6 +30,14 @@ public:
     int initialHeight;
 
     ofImage face;
+
     bool growth;
+    bool analyze;
     int growthSpeed;
+    int sceneFactor;
+    int elapsedTime;
+    int pixelAlpha;
+    float pixelBorder;
+    int faceIt;
+    int elapsed;
 };
